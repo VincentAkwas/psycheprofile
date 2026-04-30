@@ -1,0 +1,1507 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PsycheProfile — OCEAN Psychometric Assessment</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;900&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0f;
+    --surface: #111118;
+    --surface2: #1a1a26;
+    --border: rgba(255,255,255,0.08);
+    --accent-o: #f59e0b;
+    --accent-c: #10b981;
+    --accent-e: #3b82f6;
+    --accent-a: #ec4899;
+    --accent-n: #8b5cf6;
+    --text: #f0f0f8;
+    --text-muted: #6b6b8a;
+    --text-dim: #3a3a5c;
+    --gold: #f59e0b;
+    --glow: 0 0 40px rgba(245,158,11,0.15);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ANIMATED BACKGROUND */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 80% 50% at 20% 20%, rgba(245,158,11,0.04) 0%, transparent 60%),
+      radial-gradient(ellipse 60% 40% at 80% 80%, rgba(59,130,246,0.04) 0%, transparent 60%),
+      radial-gradient(ellipse 50% 60% at 50% 50%, rgba(139,92,246,0.03) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* NOISE TEXTURE */
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.4;
+  }
+
+  .container { position: relative; z-index: 1; max-width: 900px; margin: 0 auto; padding: 0 24px; }
+
+  /* ── HEADER ── */
+  header {
+    padding: 40px 0 20px;
+    text-align: center;
+  }
+
+  .logo {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 60px;
+  }
+
+  .logo-icon {
+    width: 36px; height: 36px;
+    background: linear-gradient(135deg, var(--gold), #f97316);
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px;
+  }
+
+  .logo-text {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    color: var(--text);
+  }
+
+  .logo-text span { color: var(--gold); }
+
+  /* ── HERO ── */
+  .hero { padding: 0 0 80px; text-align: center; }
+
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(245,158,11,0.1);
+    border: 1px solid rgba(245,158,11,0.25);
+    border-radius: 100px;
+    padding: 6px 16px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 32px;
+  }
+
+  .hero-badge::before {
+    content: '';
+    width: 6px; height: 6px;
+    background: var(--gold);
+    border-radius: 50%;
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(0.8); }
+  }
+
+  .hero h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(42px, 7vw, 72px);
+    font-weight: 900;
+    line-height: 1.05;
+    letter-spacing: -2px;
+    margin-bottom: 24px;
+    background: linear-gradient(135deg, #ffffff 0%, rgba(255,255,255,0.7) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .hero h1 em {
+    font-style: italic;
+    background: linear-gradient(135deg, var(--gold), #f97316);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .hero p {
+    font-size: 17px;
+    color: var(--text-muted);
+    line-height: 1.7;
+    max-width: 580px;
+    margin: 0 auto 48px;
+    font-weight: 400;
+  }
+
+  .hero-stats {
+    display: flex;
+    justify-content: center;
+    gap: 48px;
+    margin-bottom: 48px;
+  }
+
+  .stat { text-align: center; }
+  .stat-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--gold);
+  }
+  .stat-label { font-size: 12px; color: var(--text-muted); letter-spacing: 0.5px; margin-top: 2px; }
+
+  .ocean-traits {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin-bottom: 48px;
+    flex-wrap: wrap;
+  }
+
+  .trait-chip {
+    padding: 8px 18px;
+    border-radius: 100px;
+    font-size: 13px;
+    font-weight: 500;
+    border: 1px solid;
+    cursor: default;
+    transition: all 0.3s;
+  }
+
+  .trait-chip:hover { transform: translateY(-2px); }
+  .chip-o { border-color: rgba(245,158,11,0.4); color: var(--accent-o); background: rgba(245,158,11,0.08); }
+  .chip-c { border-color: rgba(16,185,129,0.4); color: var(--accent-c); background: rgba(16,185,129,0.08); }
+  .chip-e { border-color: rgba(59,130,246,0.4); color: var(--accent-e); background: rgba(59,130,246,0.08); }
+  .chip-a { border-color: rgba(236,72,153,0.4); color: var(--accent-a); background: rgba(236,72,153,0.08); }
+  .chip-n { border-color: rgba(139,92,246,0.4); color: var(--accent-n); background: rgba(139,92,246,0.08); }
+
+  .btn-start {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: linear-gradient(135deg, var(--gold), #f97316);
+    color: #000;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    padding: 18px 40px;
+    border-radius: 100px;
+    border: none;
+    cursor: pointer;
+    letter-spacing: 0.3px;
+    transition: all 0.3s;
+    box-shadow: 0 0 40px rgba(245,158,11,0.3);
+  }
+
+  .btn-start:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 40px rgba(245,158,11,0.5);
+  }
+
+  .btn-start svg { width: 18px; height: 18px; }
+
+  .start-note { font-size: 12px; color: var(--text-dim); margin-top: 16px; }
+
+  /* ── SECTIONS ── */
+  .section { display: none; }
+  .section.active { display: block; }
+
+  /* ── SETUP FORM ── */
+  .setup-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 24px;
+    padding: 48px;
+    margin-bottom: 32px;
+  }
+
+  .setup-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 28px;
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+
+  .setup-subtitle { color: var(--text-muted); font-size: 14px; margin-bottom: 36px; }
+
+  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  .form-grid.full { grid-template-columns: 1fr; }
+
+  .form-group { display: flex; flex-direction: column; gap: 8px; }
+
+  .form-label {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+
+  .form-input, .form-select {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px 16px;
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    outline: none;
+    transition: all 0.2s;
+    width: 100%;
+  }
+
+  .form-input:focus, .form-select:focus {
+    border-color: rgba(245,158,11,0.5);
+    box-shadow: 0 0 0 3px rgba(245,158,11,0.08);
+  }
+
+  .form-select option { background: #1a1a26; }
+
+  .email-section {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 24px;
+    margin-top: 20px;
+  }
+
+  .email-toggle {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    cursor: pointer;
+    user-select: none;
+  }
+
+  .toggle-switch {
+    width: 44px; height: 24px;
+    background: var(--text-dim);
+    border-radius: 100px;
+    position: relative;
+    transition: all 0.3s;
+    flex-shrink: 0;
+  }
+
+  .toggle-switch::after {
+    content: '';
+    position: absolute;
+    width: 18px; height: 18px;
+    background: white;
+    border-radius: 50%;
+    top: 3px; left: 3px;
+    transition: all 0.3s;
+  }
+
+  .toggle-switch.on { background: var(--gold); }
+  .toggle-switch.on::after { transform: translateX(20px); }
+
+  .email-label { font-size: 14px; font-weight: 500; }
+  .email-sublabel { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
+
+  .email-input-wrap { margin-top: 16px; display: none; }
+  .email-input-wrap.visible { display: block; }
+
+  .btn-begin {
+    width: 100%;
+    background: linear-gradient(135deg, var(--gold), #f97316);
+    color: #000;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    padding: 18px;
+    border-radius: 12px;
+    border: none;
+    cursor: pointer;
+    margin-top: 28px;
+    transition: all 0.3s;
+    letter-spacing: 0.3px;
+  }
+
+  .btn-begin:hover { opacity: 0.9; transform: translateY(-1px); }
+
+  /* ── QUIZ ── */
+  .quiz-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 40px;
+  }
+
+  .quiz-meta { font-size: 13px; color: var(--text-muted); }
+  .quiz-meta span { color: var(--text); font-weight: 600; }
+
+  .domain-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 14px;
+    border-radius: 100px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    border: 1px solid;
+  }
+
+  .domain-O { border-color: rgba(245,158,11,0.4); color: var(--accent-o); background: rgba(245,158,11,0.08); }
+  .domain-C { border-color: rgba(16,185,129,0.4); color: var(--accent-c); background: rgba(16,185,129,0.08); }
+  .domain-E { border-color: rgba(59,130,246,0.4); color: var(--accent-e); background: rgba(59,130,246,0.08); }
+  .domain-A { border-color: rgba(236,72,153,0.4); color: var(--accent-a); background: rgba(236,72,153,0.08); }
+  .domain-N { border-color: rgba(139,92,246,0.4); color: var(--accent-n); background: rgba(139,92,246,0.08); }
+
+  .progress-bar-wrap {
+    height: 4px;
+    background: var(--text-dim);
+    border-radius: 4px;
+    margin-bottom: 48px;
+    overflow: hidden;
+  }
+
+  .progress-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--gold), #f97316);
+    border-radius: 4px;
+    transition: width 0.4s ease;
+  }
+
+  .question-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 24px;
+    padding: 48px;
+    margin-bottom: 24px;
+    animation: fadeSlide 0.4s ease;
+  }
+
+  @keyframes fadeSlide {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .question-num {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--text-dim);
+    letter-spacing: 1px;
+    margin-bottom: 20px;
+  }
+
+  .question-text {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    font-weight: 600;
+    line-height: 1.5;
+    margin-bottom: 36px;
+    color: var(--text);
+  }
+
+  .scale-labels {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 12px;
+    font-size: 11px;
+    color: var(--text-muted);
+    font-weight: 500;
+    letter-spacing: 0.5px;
+  }
+
+  .scale-buttons {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+  }
+
+  .scale-btn {
+    flex: 1;
+    aspect-ratio: 1;
+    max-width: 64px;
+    border-radius: 14px;
+    border: 2px solid var(--border);
+    background: var(--bg);
+    color: var(--text-muted);
+    font-family: 'DM Mono', monospace;
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .scale-btn:hover { border-color: var(--gold); color: var(--gold); transform: translateY(-2px); }
+  .scale-btn.selected { background: var(--gold); border-color: var(--gold); color: #000; font-weight: 700; transform: scale(1.1); }
+
+  .scale-meaning {
+    text-align: center;
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-top: 12px;
+    min-height: 20px;
+    font-style: italic;
+  }
+
+  .quiz-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .btn-nav {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 14px 24px;
+    border-radius: 12px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--text-muted);
+  }
+
+  .btn-nav:hover { color: var(--text); border-color: rgba(255,255,255,0.2); }
+  .btn-nav.primary { background: var(--gold); border-color: var(--gold); color: #000; }
+  .btn-nav.primary:hover { opacity: 0.9; }
+  .btn-nav:disabled { opacity: 0.3; cursor: not-allowed; }
+
+  /* ── RESULTS ── */
+  .results-header {
+    text-align: center;
+    padding: 60px 0 48px;
+  }
+
+  .results-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(16,185,129,0.1);
+    border: 1px solid rgba(16,185,129,0.3);
+    border-radius: 100px;
+    padding: 6px 16px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--accent-c);
+    margin-bottom: 24px;
+  }
+
+  .results-header h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(32px, 5vw, 52px);
+    font-weight: 900;
+    letter-spacing: -1.5px;
+    margin-bottom: 12px;
+  }
+
+  .results-header p { color: var(--text-muted); font-size: 15px; }
+
+  .profile-type-card {
+    background: linear-gradient(135deg, var(--surface) 0%, rgba(245,158,11,0.05) 100%);
+    border: 1px solid rgba(245,158,11,0.2);
+    border-radius: 24px;
+    padding: 40px;
+    margin-bottom: 32px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .profile-type-card::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -20%;
+    width: 300px;
+    height: 300px;
+    background: radial-gradient(circle, rgba(245,158,11,0.08) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .profile-label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 8px;
+  }
+
+  .profile-type-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 32px;
+    font-weight: 900;
+    margin-bottom: 12px;
+  }
+
+  .profile-type-desc { color: var(--text-muted); font-size: 15px; line-height: 1.7; }
+
+  /* OCEAN SCORES */
+  .scores-grid { display: flex; flex-direction: column; gap: 16px; margin-bottom: 32px; }
+
+  .score-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 28px 32px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .score-card-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 20px;
+  }
+
+  .score-domain {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .domain-letter {
+    width: 44px; height: 44px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    font-weight: 900;
+  }
+
+  .domain-letter-O { background: rgba(245,158,11,0.15); color: var(--accent-o); }
+  .domain-letter-C { background: rgba(16,185,129,0.15); color: var(--accent-c); }
+  .domain-letter-E { background: rgba(59,130,246,0.15); color: var(--accent-e); }
+  .domain-letter-A { background: rgba(236,72,153,0.15); color: var(--accent-a); }
+  .domain-letter-N { background: rgba(139,92,246,0.15); color: var(--accent-n); }
+
+  .score-name { font-size: 16px; font-weight: 600; margin-bottom: 2px; }
+  .score-facet { font-size: 12px; color: var(--text-muted); }
+
+  .score-value {
+    font-family: 'Playfair Display', serif;
+    font-size: 36px;
+    font-weight: 900;
+    line-height: 1;
+  }
+
+  .score-value small { font-size: 16px; color: var(--text-muted); font-family: 'DM Sans', sans-serif; font-weight: 400; }
+
+  .score-bar-track {
+    height: 6px;
+    background: var(--text-dim);
+    border-radius: 6px;
+    margin-bottom: 16px;
+    overflow: hidden;
+  }
+
+  .score-bar-fill {
+    height: 100%;
+    border-radius: 6px;
+    transition: width 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+    width: 0%;
+  }
+
+  .fill-O { background: linear-gradient(90deg, #b45309, var(--accent-o)); }
+  .fill-C { background: linear-gradient(90deg, #047857, var(--accent-c)); }
+  .fill-E { background: linear-gradient(90deg, #1d4ed8, var(--accent-e)); }
+  .fill-A { background: linear-gradient(90deg, #9d174d, var(--accent-a)); }
+  .fill-N { background: linear-gradient(90deg, #5b21b6, var(--accent-n)); }
+
+  .score-level {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    padding: 4px 10px;
+    border-radius: 100px;
+    margin-bottom: 16px;
+  }
+
+  .level-high { background: rgba(16,185,129,0.1); color: var(--accent-c); }
+  .level-mid { background: rgba(245,158,11,0.1); color: var(--gold); }
+  .level-low { background: rgba(139,92,246,0.1); color: var(--accent-n); }
+
+  .score-insight { font-size: 13px; color: var(--text-muted); line-height: 1.6; }
+  .score-strength { color: var(--accent-c); font-weight: 500; }
+  .score-weakness { color: #f87171; font-weight: 500; }
+
+  /* IMPROVE SECTION */
+  .improve-section {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 24px;
+    padding: 40px;
+    margin-bottom: 32px;
+  }
+
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+
+  .section-sub { font-size: 13px; color: var(--text-muted); margin-bottom: 28px; }
+
+  .improve-cards { display: flex; flex-direction: column; gap: 16px; }
+
+  .improve-card {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 24px;
+  }
+
+  .improve-card-top { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
+  .improve-icon { font-size: 22px; }
+  .improve-title { font-size: 15px; font-weight: 600; }
+  .improve-desc { font-size: 13px; color: var(--text-muted); line-height: 1.6; margin-bottom: 12px; }
+
+  .improve-tips { display: flex; flex-direction: column; gap: 8px; }
+  .improve-tip {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    font-size: 13px;
+    color: var(--text-muted);
+  }
+  .improve-tip::before { content: '→'; color: var(--gold); flex-shrink: 0; margin-top: 1px; }
+
+  /* CAREERS SECTION */
+  .careers-section {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 24px;
+    padding: 40px;
+    margin-bottom: 32px;
+  }
+
+  .careers-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin-top: 24px; }
+
+  .career-card {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 20px;
+    text-align: center;
+    transition: all 0.2s;
+  }
+
+  .career-card:hover { border-color: rgba(245,158,11,0.3); transform: translateY(-2px); }
+  .career-icon { font-size: 28px; margin-bottom: 10px; }
+  .career-title { font-size: 14px; font-weight: 600; margin-bottom: 4px; }
+  .career-match { font-size: 11px; color: var(--gold); font-weight: 600; }
+
+  .career-note {
+    font-size: 13px;
+    color: var(--text-muted);
+    line-height: 1.6;
+    margin-top: 20px;
+    padding: 16px;
+    background: rgba(245,158,11,0.05);
+    border: 1px solid rgba(245,158,11,0.1);
+    border-radius: 12px;
+  }
+
+  /* SHARE / ACTION */
+  .action-row {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 60px;
+    flex-wrap: wrap;
+  }
+
+  .btn-action {
+    flex: 1;
+    min-width: 180px;
+    padding: 16px 24px;
+    border-radius: 14px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+  }
+
+  .btn-action.primary { background: var(--gold); color: #000; border: none; }
+  .btn-action.secondary { background: transparent; border: 1px solid var(--border); color: var(--text); }
+  .btn-action:hover { transform: translateY(-2px); opacity: 0.9; }
+
+  /* ── FOOTER ── */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 32px 0;
+    text-align: center;
+    font-size: 12px;
+    color: var(--text-dim);
+  }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 640px) {
+    .form-grid { grid-template-columns: 1fr; }
+    .careers-grid { grid-template-columns: 1fr 1fr; }
+    .hero-stats { gap: 24px; }
+    .setup-card, .question-card { padding: 28px 24px; }
+    .scale-btn { max-width: 48px; }
+    .quiz-header { flex-direction: column; align-items: flex-start; gap: 12px; }
+  }
+
+  /* Loading screen */
+  .loading-screen {
+    position: fixed;
+    inset: 0;
+    background: var(--bg);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    transition: opacity 0.5s;
+  }
+
+  .loading-screen.hidden { opacity: 0; pointer-events: none; }
+
+  .loader-rings {
+    position: relative;
+    width: 80px;
+    height: 80px;
+    margin-bottom: 24px;
+  }
+
+  .loader-ring {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    border: 2px solid transparent;
+    animation: spin 2s linear infinite;
+  }
+
+  .loader-ring:nth-child(1) { border-top-color: var(--gold); animation-duration: 1.5s; }
+  .loader-ring:nth-child(2) { inset: 10px; border-right-color: var(--accent-e); animation-duration: 2s; animation-direction: reverse; }
+  .loader-ring:nth-child(3) { inset: 20px; border-bottom-color: var(--accent-a); animation-duration: 2.5s; }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .loader-text { font-size: 13px; color: var(--text-muted); letter-spacing: 1px; }
+
+  /* Completion animation */
+  @keyframes confetti { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+  .results-header { animation: confetti 0.5s ease; }
+
+</style>
+</head>
+<body>
+
+<!-- LOADING -->
+<div class="loading-screen" id="loadingScreen">
+  <div class="loader-rings">
+    <div class="loader-ring"></div>
+    <div class="loader-ring"></div>
+    <div class="loader-ring"></div>
+  </div>
+  <div class="loader-text">INITIALISING ASSESSMENT ENGINE</div>
+</div>
+
+<div class="container">
+  <header>
+    <div class="logo">
+      <div class="logo-icon">🧠</div>
+      <div class="logo-text">Psyche<span>Profile</span></div>
+    </div>
+  </header>
+
+  <!-- ════════════════════════ LANDING ════════════════════════ -->
+  <section class="section active" id="landing">
+    <div class="hero">
+      <div class="hero-badge">OCEAN Psychometric Assessment</div>
+      <h1>Understand <em>Who You Are</em> at Your Core</h1>
+      <p>The same scientifically validated assessment used by Fortune 500 companies, top universities, and global recruitment leaders — now available to you, free.</p>
+      <div class="hero-stats">
+        <div class="stat"><div class="stat-num">50</div><div class="stat-label">Standardised Questions</div></div>
+        <div class="stat"><div class="stat-num">5</div><div class="stat-label">Personality Domains</div></div>
+        <div class="stat"><div class="stat-num">15</div><div class="stat-label">Min. to Complete</div></div>
+      </div>
+      <div class="ocean-traits">
+        <div class="trait-chip chip-o">🔮 Openness</div>
+        <div class="trait-chip chip-c">⚙️ Conscientiousness</div>
+        <div class="trait-chip chip-e">⚡ Extraversion</div>
+        <div class="trait-chip chip-a">🤝 Agreeableness</div>
+        <div class="trait-chip chip-n">🌊 Emotional Stability</div>
+      </div>
+      <button class="btn-start" onclick="showSection('setup')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+        Begin Assessment
+      </button>
+      <div class="start-note">Free · Private · Science-backed · No registration required</div>
+    </div>
+  </section>
+
+  <!-- ════════════════════════ SETUP ════════════════════════ -->
+  <section class="section" id="setup">
+    <div class="setup-card">
+      <div class="setup-title">Before We Begin</div>
+      <div class="setup-subtitle">Tell us a little about yourself — this personalises your career insights.</div>
+
+      <div class="form-grid">
+        <div class="form-group">
+          <label class="form-label">First Name</label>
+          <input class="form-input" id="userName" type="text" placeholder="e.g. Manu">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Age Range</label>
+          <select class="form-select" id="userAge">
+            <option value="">Select age range</option>
+            <option>Under 20</option>
+            <option>20–24</option>
+            <option>25–29</option>
+            <option>30–39</option>
+            <option>40–49</option>
+            <option>50+</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Gender (Optional)</label>
+          <select class="form-select" id="userGender">
+            <option value="">Prefer not to say</option>
+            <option>Male</option>
+            <option>Female</option>
+            <option>Non-binary</option>
+            <option>Other</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Field of Study / Occupation</label>
+          <select class="form-select" id="userField">
+            <option value="">Select your field</option>
+            <optgroup label="Healthcare & Science">
+              <option value="mls">Medical Laboratory Science</option>
+              <option value="medicine">Medicine & Surgery</option>
+              <option value="pharmacy">Pharmacy</option>
+              <option value="nursing">Nursing & Midwifery</option>
+              <option value="biotech">Biotechnology</option>
+              <option value="publichealth">Public Health</option>
+            </optgroup>
+            <optgroup label="Business & Management">
+              <option value="business">Business Administration</option>
+              <option value="accounting">Accounting & Finance</option>
+              <option value="marketing">Marketing</option>
+              <option value="entrepreneurship">Entrepreneurship</option>
+              <option value="hr">Human Resources</option>
+            </optgroup>
+            <optgroup label="Technology">
+              <option value="cs">Computer Science</option>
+              <option value="engineering">Engineering</option>
+              <option value="datasc">Data Science / AI</option>
+              <option value="cybersec">Cybersecurity</option>
+            </optgroup>
+            <optgroup label="Arts & Humanities">
+              <option value="law">Law</option>
+              <option value="education">Education</option>
+              <option value="media">Media & Communications</option>
+              <option value="design">Design & Creative Arts</option>
+            </optgroup>
+            <option value="other">Other</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Current Status</label>
+          <select class="form-select" id="userStatus">
+            <option value="">Select status</option>
+            <option>Student</option>
+            <option>Recent Graduate</option>
+            <option>Early Career (1–3 years)</option>
+            <option>Mid Career (4–10 years)</option>
+            <option>Senior Professional</option>
+            <option>Job Seeker</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Highest Qualification</label>
+          <select class="form-select" id="userQual">
+            <option value="">Select qualification</option>
+            <option>Secondary / A-Level</option>
+            <option>HND / Diploma</option>
+            <option>Bachelor's Degree</option>
+            <option>Master's Degree</option>
+            <option>Doctorate (PhD)</option>
+            <option>Professional Certification</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="email-section">
+        <div class="email-toggle" onclick="toggleEmail()">
+          <div class="toggle-switch" id="emailToggle"></div>
+          <div>
+            <div class="email-label">📧 Receive your results by email <span style="font-size:11px;color:var(--text-muted);font-weight:400;">(Optional)</span></div>
+            <div class="email-sublabel">Your full personality report will be sent to your inbox. We never spam or share your data.</div>
+          </div>
+        </div>
+        <div class="email-input-wrap" id="emailInputWrap">
+          <label class="form-label" style="margin-top:0">Email Address</label>
+          <input class="form-input" id="userEmail" type="email" placeholder="you@example.com" style="margin-top:8px">
+        </div>
+      </div>
+
+      <button class="btn-begin" onclick="startQuiz()">Start the Assessment →</button>
+    </div>
+  </section>
+
+  <!-- ════════════════════════ QUIZ ════════════════════════ -->
+  <section class="section" id="quiz">
+    <div class="quiz-header">
+      <div>
+        <div class="quiz-meta">Question <span id="qNum">1</span> of <span id="qTotal">50</span></div>
+        <div style="font-size:12px;color:var(--text-dim);margin-top:4px;font-family:'DM Mono',monospace;" id="qDomain"></div>
+      </div>
+      <div class="domain-badge" id="domainBadge"></div>
+    </div>
+
+    <div class="progress-bar-wrap">
+      <div class="progress-bar-fill" id="progressBar"></div>
+    </div>
+
+    <div class="question-card">
+      <div class="question-num" id="questionNum"></div>
+      <div class="question-text" id="questionText"></div>
+      <div class="scale-labels">
+        <span>Strongly Disagree</span>
+        <span>Neutral</span>
+        <span>Strongly Agree</span>
+      </div>
+      <div class="scale-buttons" id="scaleButtons">
+        <button class="scale-btn" onclick="selectAnswer(1)" data-val="1">1</button>
+        <button class="scale-btn" onclick="selectAnswer(2)" data-val="2">2</button>
+        <button class="scale-btn" onclick="selectAnswer(3)" data-val="3">3</button>
+        <button class="scale-btn" onclick="selectAnswer(4)" data-val="4">4</button>
+        <button class="scale-btn" onclick="selectAnswer(5)" data-val="5">5</button>
+      </div>
+      <div class="scale-meaning" id="scaleMeaning"></div>
+    </div>
+
+    <div class="quiz-nav">
+      <button class="btn-nav" id="btnBack" onclick="goBack()">← Back</button>
+      <div style="font-size:12px;color:var(--text-muted);text-align:center;">Select a number to continue</div>
+      <button class="btn-nav primary" id="btnNext" onclick="goNext()" disabled>Next →</button>
+    </div>
+  </section>
+
+  <!-- ════════════════════════ RESULTS ════════════════════════ -->
+  <section class="section" id="results">
+    <div class="results-header">
+      <div class="results-badge">✓ Assessment Complete</div>
+      <h2 id="resultsHeadline">Your Personality Profile</h2>
+      <p id="resultsSubline"></p>
+    </div>
+
+    <!-- PROFILE TYPE -->
+    <div class="profile-type-card">
+      <div class="profile-label">Your Personality Archetype</div>
+      <div class="profile-type-name" id="profileTypeName"></div>
+      <div class="profile-type-desc" id="profileTypeDesc"></div>
+    </div>
+
+    <!-- OCEAN SCORES -->
+    <div class="scores-grid" id="scoresGrid"></div>
+
+    <!-- IMPROVEMENT AREAS -->
+    <div class="improve-section">
+      <div class="section-title">🎯 Areas for Growth</div>
+      <div class="section-sub">Based on your profile — specific, actionable strategies to develop your weaker traits.</div>
+      <div class="improve-cards" id="improveCards"></div>
+    </div>
+
+    <!-- CAREERS -->
+    <div class="careers-section">
+      <div class="section-title">💼 Career & Field Alignment</div>
+      <div class="section-sub" id="careerSubtitle"></div>
+      <div class="careers-grid" id="careersGrid"></div>
+      <div class="career-note" id="careerNote"></div>
+    </div>
+
+    <!-- ACTIONS -->
+    <div class="action-row">
+      <button class="btn-action primary" onclick="window.print()">📄 Download Report</button>
+      <button class="btn-action secondary" onclick="restartQuiz()">🔄 Retake Assessment</button>
+      <button class="btn-action secondary" onclick="shareResults()">📤 Share Results</button>
+    </div>
+  </section>
+</div>
+
+<footer>
+  <div class="container">
+    PsycheProfile — OCEAN Psychometric Assessment &nbsp;·&nbsp;
+    Based on the Big Five (NEO PI-R) model &nbsp;·&nbsp;
+    Validated by 50+ years of personality psychology research
+  </div>
+</footer>
+
+<script>
+// ══════════════════════════════════════════════════════════════════════════════
+// QUESTION BANK — 50 STANDARDISED QUESTIONS (10 per domain)
+// Scoring: reversed items marked with R flag
+// ══════════════════════════════════════════════════════════════════════════════
+const QUESTIONS = [
+  // OPENNESS (10 questions)
+  { id:1,  domain:'O', text:'I enjoy exploring abstract ideas and theoretical concepts, even when they have no immediate practical application.', reversed:false },
+  { id:2,  domain:'O', text:'I am genuinely curious about how things work — from scientific processes to social systems.', reversed:false },
+  { id:3,  domain:'O', text:'I find it difficult to think of creative solutions when faced with unusual problems.', reversed:true },
+  { id:4,  domain:'O', text:'I actively seek out new experiences, whether through travel, art, cuisine, or meeting people from different backgrounds.', reversed:false },
+  { id:5,  domain:'O', text:'I tend to prefer familiar routines over trying new approaches at work.', reversed:true },
+  { id:6,  domain:'O', text:'When working on a project, I often see possibilities and angles that others miss.', reversed:false },
+  { id:7,  domain:'O', text:'I appreciate complex artwork, music, or literature — even if others find it confusing.', reversed:false },
+  { id:8,  domain:'O', text:'I prefer concrete facts over imaginative theories when solving problems.', reversed:true },
+  { id:9,  domain:'O', text:'I enjoy reflecting on questions about life, meaning, and purpose.', reversed:false },
+  { id:10, domain:'O', text:'I find that thinking "outside the box" comes naturally to me.', reversed:false },
+
+  // CONSCIENTIOUSNESS (10 questions)
+  { id:11, domain:'C', text:'I plan my work carefully before beginning and consistently follow through on my plans.', reversed:false },
+  { id:12, domain:'C', text:'I often delay starting tasks — especially ones I find difficult or unpleasant.', reversed:true },
+  { id:13, domain:'C', text:'I set high personal standards and feel dissatisfied if I fall short of them.', reversed:false },
+  { id:14, domain:'C', text:'I keep my workspace and files well-organised so I can find things quickly.', reversed:false },
+  { id:15, domain:'C', text:'I find it hard to stay focused when a task becomes tedious or repetitive.', reversed:true },
+  { id:16, domain:'C', text:'I work best when given a clear structure, defined goals, and measurable outcomes.', reversed:false },
+  { id:17, domain:'C', text:'People who rely on me know I will deliver what I commit to, on time.', reversed:false },
+  { id:18, domain:'C', text:'I tend to act impulsively and make decisions without thinking through all the consequences.', reversed:true },
+  { id:19, domain:'C', text:'I prefer to finish one task completely before starting another.', reversed:false },
+  { id:20, domain:'C', text:'I check my work carefully for errors before submitting or presenting it.', reversed:false },
+
+  // EXTRAVERSION (10 questions)
+  { id:21, domain:'E', text:'I feel energised and alive when I am around other people in social settings.', reversed:false },
+  { id:22, domain:'E', text:'I prefer to work alone rather than in groups, even when group work is more efficient.', reversed:true },
+  { id:23, domain:'E', text:'I find it easy to start conversations with people I have never met before.', reversed:false },
+  { id:24, domain:'E', text:'I enjoy being the centre of attention in social or professional situations.', reversed:false },
+  { id:25, domain:'E', text:'After a long day of social interaction, I feel drained and need quiet time to recharge.', reversed:true },
+  { id:26, domain:'E', text:'I speak up confidently in meetings or group discussions, even if my view differs from the majority.', reversed:false },
+  { id:27, domain:'E', text:'I feel uncomfortable in large gatherings or networking events.', reversed:true },
+  { id:28, domain:'E', text:'I am seen by others as enthusiastic, upbeat, and positive to be around.', reversed:false },
+  { id:29, domain:'E', text:'I prefer a fast-paced, high-energy work environment over a quiet, structured one.', reversed:false },
+  { id:30, domain:'E', text:'I find that I often take on a leadership role naturally in group situations.', reversed:false },
+
+  // AGREEABLENESS (10 questions)
+  { id:31, domain:'A', text:'I genuinely care about the wellbeing of others and actively try to support people who are struggling.', reversed:false },
+  { id:32, domain:'A', text:'I sometimes find it difficult to see things from another person\'s point of view.', reversed:true },
+  { id:33, domain:'A', text:'I prefer to cooperate rather than compete, even when competing could benefit me personally.', reversed:false },
+  { id:34, domain:'A', text:'I find it easy to forgive others who have wronged me or made mistakes.', reversed:false },
+  { id:35, domain:'A', text:'I have been told I can be stubborn or difficult to work with when I disagree with others.', reversed:true },
+  { id:36, domain:'A', text:'I go out of my way to make others feel comfortable and included.', reversed:false },
+  { id:37, domain:'A', text:'I trust most people\'s intentions unless I am given a concrete reason not to.', reversed:false },
+  { id:38, domain:'A', text:'When someone is rude to me, my instinct is often to respond defensively rather than calmly.', reversed:true },
+  { id:39, domain:'A', text:'I find it hard to say "no" to people who need help, even when I am already overwhelmed.', reversed:false },
+  { id:40, domain:'A', text:'I believe working together produces better outcomes than working independently.', reversed:false },
+
+  // NEUROTICISM / EMOTIONAL STABILITY (10 questions)
+  { id:41, domain:'N', text:'I often find myself worrying about things that may go wrong, even when everything seems fine.', reversed:false },
+  { id:42, domain:'N', text:'I remain calm and composed even when things are not going according to plan.', reversed:true },
+  { id:43, domain:'N', text:'Under significant pressure at work, I sometimes feel overwhelmed or unable to cope.', reversed:false },
+  { id:44, domain:'N', text:'My emotions are generally stable — I rarely experience extreme highs or lows in mood.', reversed:true },
+  { id:45, domain:'N', text:'I am sensitive to criticism and find negative feedback difficult to process.', reversed:false },
+  { id:46, domain:'N', text:'I can separate my personal feelings from my professional responsibilities effectively.', reversed:true },
+  { id:47, domain:'N', text:'I sometimes feel anxious before important events — presentations, interviews, or evaluations.', reversed:false },
+  { id:48, domain:'N', text:'When I make a mistake, I tend to dwell on it and find it difficult to move on.', reversed:false },
+  { id:49, domain:'N', text:'I am able to manage stress effectively, even in demanding or unpredictable situations.', reversed:true },
+  { id:50, domain:'N', text:'My emotional reactions are proportionate — I do not typically overreact to setbacks or conflicts.', reversed:true },
+];
+
+const DOMAIN_INFO = {
+  O: { name:'Openness', color:'var(--accent-o)', letter:'O' },
+  C: { name:'Conscientiousness', color:'var(--accent-c)', letter:'C' },
+  E: { name:'Extraversion', color:'var(--accent-e)', letter:'E' },
+  A: { name:'Agreeableness', color:'var(--accent-a)', letter:'A' },
+  N: { name:'Emotional Stability', color:'var(--accent-n)', letter:'N' },
+};
+
+const SCALE_MEANINGS = {
+  1:'Strongly Disagree',2:'Disagree',3:'Neutral',4:'Agree',5:'Strongly Agree'
+};
+
+// ── STATE ──────────────────────────────────────────────────────────────────────
+let current = 0;
+let answers = new Array(50).fill(null);
+let userName = '';
+let userField = '';
+let emailEnabled = false;
+
+// ── UTILS ──────────────────────────────────────────────────────────────────────
+function showSection(id) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo({ top:0, behavior:'smooth' });
+}
+
+function toggleEmail() {
+  emailEnabled = !emailEnabled;
+  document.getElementById('emailToggle').classList.toggle('on', emailEnabled);
+  document.getElementById('emailInputWrap').classList.toggle('visible', emailEnabled);
+}
+
+function startQuiz() {
+  userName = document.getElementById('userName').value.trim() || 'Friend';
+  userField = document.getElementById('userField').value;
+  current = 0;
+  answers = new Array(50).fill(null);
+  document.getElementById('qTotal').textContent = QUESTIONS.length;
+  showSection('quiz');
+  renderQuestion();
+}
+
+function renderQuestion() {
+  const q = QUESTIONS[current];
+  document.getElementById('qNum').textContent = current + 1;
+  document.getElementById('questionNum').textContent = `Q${String(current+1).padStart(2,'0')} / ${QUESTIONS.length}`;
+  document.getElementById('questionText').textContent = q.text;
+
+  const domainNames = { O:'Openness', C:'Conscientiousness', E:'Extraversion', A:'Agreeableness', N:'Emotional Stability' };
+  const domainColors = { O:'O', C:'C', E:'E', A:'A', N:'N' };
+  document.getElementById('qDomain').textContent = `Domain: ${domainNames[q.domain]}`;
+  document.getElementById('domainBadge').textContent = `${q.domain} — ${domainNames[q.domain]}`;
+  document.getElementById('domainBadge').className = `domain-badge domain-${q.domain}`;
+
+  // Progress
+  document.getElementById('progressBar').style.width = `${(current / QUESTIONS.length) * 100}%`;
+
+  // Scale buttons
+  const btns = document.querySelectorAll('.scale-btn');
+  btns.forEach(b => b.classList.remove('selected'));
+  if (answers[current] !== null) {
+    btns[answers[current]-1].classList.add('selected');
+    document.getElementById('scaleMeaning').textContent = SCALE_MEANINGS[answers[current]];
+  } else {
+    document.getElementById('scaleMeaning').textContent = '';
+  }
+
+  document.getElementById('btnNext').disabled = answers[current] === null;
+  document.getElementById('btnBack').disabled = current === 0;
+}
+
+function selectAnswer(val) {
+  answers[current] = val;
+  document.querySelectorAll('.scale-btn').forEach(b => b.classList.remove('selected'));
+  document.querySelectorAll('.scale-btn')[val-1].classList.add('selected');
+  document.getElementById('scaleMeaning').textContent = SCALE_MEANINGS[val];
+  document.getElementById('btnNext').disabled = false;
+
+  // Auto-advance after 400ms
+  setTimeout(() => {
+    if (current < QUESTIONS.length - 1) goNext();
+    else showResults();
+  }, 450);
+}
+
+function goNext() {
+  if (answers[current] === null) return;
+  if (current >= QUESTIONS.length - 1) { showResults(); return; }
+  current++;
+  renderQuestion();
+}
+
+function goBack() {
+  if (current === 0) return;
+  current--;
+  renderQuestion();
+}
+
+// ── SCORING ────────────────────────────────────────────────────────────────────
+function calculateScores() {
+  const rawScores = { O:0, C:0, E:0, A:0, N:0 };
+  const counts = { O:0, C:0, E:0, A:0, N:0 };
+
+  QUESTIONS.forEach((q, i) => {
+    let val = answers[i] || 3;
+    if (q.reversed) val = 6 - val; // reverse score
+    rawScores[q.domain] += val;
+    counts[q.domain]++;
+  });
+
+  // Compute percentage (max per domain = 5 × 10 = 50)
+  const pct = {};
+  Object.keys(rawScores).forEach(d => {
+    pct[d] = Math.round((rawScores[d] / (counts[d] * 5)) * 100);
+  });
+
+  return pct;
+}
+
+function getLevel(pct) {
+  if (pct >= 70) return 'high';
+  if (pct >= 40) return 'mid';
+  return 'low';
+}
+
+// ── INTERPRETATIONS ─────────────────────────────────────────────────────────────
+const DOMAIN_DESCRIPTIONS = {
+  O: {
+    high: { strength:"You are a creative, curious, and intellectually adventurous thinker. You thrive in environments that reward innovation, abstract thinking, and exploring new paradigms. You naturally adapt to change and generate original solutions.", weakness:"You may sometimes prioritise novelty over practicality, struggle with repetitive or highly structured tasks, or appear impractical to more conventional colleagues." },
+    mid: { strength:"You balance creativity with pragmatism well. You can adapt your thinking style to the situation — innovative when needed, methodical when required.", weakness:"You may sometimes hold back from fully exploring unconventional ideas. Push yourself to take more intellectual risks." },
+    low: { strength:"You are reliable, consistent, and practical. You excel in roles requiring precise adherence to established methods and clear factual thinking.", weakness:"You may resist change or find ambiguous, open-ended tasks frustrating. Actively practising creative thinking can open new professional doors." }
+  },
+  C: {
+    high: { strength:"You are highly dependable, goal-driven, and self-disciplined. Organisations trust people like you with high-stakes responsibilities because you consistently deliver with precision and thoroughness.", weakness:"High conscientiousness can tip into perfectionism, rigidity, or overworking. Learning to delegate and accept 'good enough' can protect your wellbeing." },
+    mid: { strength:"You have a good work ethic balanced with flexibility. You meet commitments but don't let structure stifle you.", weakness:"There may be moments where follow-through falters or organisation slips — building stronger personal systems can help bridge this gap." },
+    low: { strength:"You are spontaneous, flexible, and adaptable. You work best in dynamic environments where rules are loose and creativity is prized.", weakness:"Low conscientiousness can impact reliability, time management, and perceived professionalism. Developing structured habits — using planners, setting micro-deadlines — is critical." }
+  },
+  E: {
+    high: { strength:"You are energetic, persuasive, and naturally magnetic. You thrive in leadership, sales, public-facing, and collaborative roles. People are drawn to your enthusiasm and confidence.", weakness:"Extreme extraversion can mean you overlook the value of quiet reflection, overpower introverts in teams, or make hasty decisions without sufficient inner processing." },
+    mid: { strength:"You are an ambivert — comfortable in both social and solitary contexts. This rare balance makes you versatile in diverse team environments.", weakness:"You may sometimes not fully commit to either style — push yourself to take on leadership visibility or develop deeper solitary focus, depending on what the role demands." },
+    low: { strength:"You are a deep thinker, a careful listener, and an outstanding one-on-one communicator. Your considered approach brings depth and precision to complex work.", weakness:"Introverted tendencies may limit your visibility, networking effectiveness, or leadership readiness. Structured exposure to public speaking and networking can transform your career trajectory." }
+  },
+  A: {
+    high: { strength:"You are exceptionally collaborative, empathetic, and trusted by those around you. You build strong professional relationships and create psychologically safe environments for teams.", weakness:"High agreeableness can mean difficulty saying 'no', avoiding necessary conflict, or being taken advantage of. Developing assertiveness is key to advancing professionally without compromising your wellbeing." },
+    mid: { strength:"You balance cooperation with assertiveness effectively. You can advocate for yourself while still being considerate of others' needs.", weakness:"Ensure you don't default to agreeableness under pressure when a firm position is needed. Practice conflict-navigation skills." },
+    low: { strength:"You are direct, competitive, and willing to challenge the status quo. In negotiation, advocacy, or highly competitive environments, this serves you well.", weakness:"Low agreeableness can create friction in team settings. Developing active listening, empathy, and diplomatic communication will dramatically improve professional relationships." }
+  },
+  N: {
+    high: { strength:"You are deeply sensitive, emotionally aware, and highly perceptive. Your emotional depth often drives passionate, committed work.", weakness:"High neuroticism can mean frequent anxiety, emotional volatility, and difficulty managing high-pressure situations. Evidence-based techniques like mindfulness, cognitive reframing, and structured stress management are transformative." },
+    mid: { strength:"You have a generally stable emotional baseline with normal reactive periods. You handle most pressures well with occasional dips.", weakness:"Identify your specific stress triggers and develop targeted coping strategies for those moments." },
+    low: { strength:"You are calm, resilient, and exceptionally composed under pressure. You perform at your best when others around you are struggling — a rare and prized leadership quality.", weakness:"Very low neuroticism can occasionally mean you underestimate genuine risks or appear emotionally disconnected to teammates who need empathic support." }
+  }
+};
+
+const IMPROVEMENT_PLANS = {
+  O_low: { icon:'🔮', title:'Cultivate Intellectual Curiosity', desc:'Your profile shows lower openness — expanding your intellectual curiosity will open significant career opportunities.', tips:['Read one non-fiction book per month outside your field (start with Thinking, Fast and Slow by Daniel Kahneman)','Join cross-disciplinary workshops or seminars', 'Set a monthly "try something new" challenge — a new skill, cuisine, route, or perspective','When solving a problem, deliberately generate 3 alternatives before choosing the first solution'] },
+  C_low: { icon:'⚙️', title:'Build Structured Discipline Habits', desc:'Developing stronger organisation and follow-through will significantly improve your professional reputation and outcomes.', tips:['Implement a weekly review: every Sunday, plan the coming week with specific tasks and deadlines','Use time-blocking — allocate fixed slots for deep work and admin each day','Apply the "two-minute rule": if a task takes under two minutes, do it immediately','Track your commitments in a simple app (Todoist, Notion) and review completion rates weekly'] },
+  E_low: { icon:'⚡', title:'Build Professional Visibility', desc:'Developing targeted social confidence will multiply your career opportunities and leadership potential.', tips:['Commit to speaking at least once in every meeting you attend — one comment, one question','Join one professional network event per month — prepare three conversation starters in advance','Take a public speaking course (Toastmasters is free and available worldwide)','Practise "warm contact" — reconnect with two people in your professional network each week'] },
+  A_low: { icon:'🤝', title:'Develop Empathy & Diplomatic Communication', desc:'Strengthening your collaborative and empathic skills will dramatically improve team relationships and professional outcomes.', tips:['Practise active listening: in every conversation, let the other person finish completely before responding','Before disagreeing, acknowledge the valid elements of the other perspective first','Ask "how are you?" genuinely — and listen to the full answer','Read Nonviolent Communication by Marshall Rosenberg — a proven toolkit for empathic dialogue'] },
+  N_high: { icon:'🌊', title:'Build Emotional Resilience', desc:'Developing emotional regulation strategies will strengthen your performance under pressure and long-term career durability.', tips:['Practise 4-7-8 breathing (inhale 4s, hold 7s, exhale 8s) when you feel overwhelmed','Develop a "worry journal" — write down anxieties, then write evidence for and against each worry','Practise cognitive reframing: for every negative thought, challenge it with one realistic counterpoint','Consider a structured mindfulness programme (10-week MBSR course) — scientifically proven to reduce anxiety by up to 39%'] },
+};
+
+// ── CAREER MAPS ────────────────────────────────────────────────────────────────
+const CAREER_PROFILES = {
+  mls: {
+    title:'Medical Laboratory Science',
+    intro:'Your OCEAN profile maps directly to the demands of the MLS profession and related healthcare fields.',
+    note:'MLS professionals with high Conscientiousness and Openness consistently outperform in quality management, research, and diagnostic accuracy. Your profile suggests strong alignment with laboratory roles demanding precision and analytical thinking.',
+    careers:[
+      { icon:'🔬', title:'Clinical Laboratory Scientist', match:'Strong Match' },
+      { icon:'📊', title:'QC & Quality Assurance Specialist', match:'Excellent Match' },
+      { icon:'🧬', title:'Research Scientist (Biomedical)', match:'Strong Match' },
+      { icon:'🏥', title:'Laboratory Manager', match:'Good Match' },
+      { icon:'💊', title:'Pharmaceutical QC Analyst', match:'Strong Match' },
+      { icon:'📋', title:'Healthcare Regulatory Affairs', match:'Good Match' },
+    ]
+  },
+  business: {
+    intro:'Your profile aligns well with business and management fields.',
+    note:'High Extraversion and Conscientiousness are the two strongest predictors of leadership success in business settings.',
+    careers:[
+      { icon:'📈', title:'Business Development Manager', match:'Strong Match' },
+      { icon:'💼', title:'Strategy Consultant', match:'Strong Match' },
+      { icon:'👥', title:'HR & People Manager', match:'Good Match' },
+      { icon:'📊', title:'Financial Analyst', match:'Good Match' },
+      { icon:'🚀', title:'Entrepreneur / Startup Founder', match:'Strong Match' },
+      { icon:'🎯', title:'Marketing Manager', match:'Good Match' },
+    ]
+  },
+  cs: {
+    intro:'Your personality profile maps to key tech career pathways.',
+    note:'Openness and Conscientiousness are the strongest predictors of success in technology fields, particularly in software development and research.',
+    careers:[
+      { icon:'💻', title:'Software Engineer', match:'Strong Match' },
+      { icon:'🤖', title:'AI / ML Engineer', match:'Strong Match' },
+      { icon:'🔐', title:'Cybersecurity Analyst', match:'Good Match' },
+      { icon:'📊', title:'Data Scientist', match:'Strong Match' },
+      { icon:'🌐', title:'Full-Stack Developer', match:'Good Match' },
+      { icon:'📱', title:'Product Manager', match:'Good Match' },
+    ]
+  },
+  default: {
+    intro:'Based on your OCEAN profile, here are the career areas where your personality traits will create a competitive advantage.',
+    note:'Your unique combination of personality traits positions you well across multiple career domains. The strongest matches align with your dominant traits.',
+    careers:[
+      { icon:'🎓', title:'Research & Academia', match:'Openness-driven' },
+      { icon:'👨‍⚕️', title:'Healthcare & Wellbeing', match:'Agreeableness-driven' },
+      { icon:'📊', title:'Analysis & Strategy', match:'Conscientiousness-driven' },
+      { icon:'🎤', title:'Leadership & Management', match:'Extraversion-driven' },
+      { icon:'🤝', title:'Counselling & Social Work', match:'Agreeableness-driven' },
+      { icon:'🚀', title:'Innovation & Entrepreneurship', match:'Openness-driven' },
+    ]
+  }
+};
+
+// ── PROFILE ARCHETYPES ─────────────────────────────────────────────────────────
+function getProfileType(scores) {
+  const { O, C, E, A, N } = scores;
+  if (C >= 70 && O >= 60) return { name:'The Visionary Executor', desc:`You combine rare analytical discipline with genuine creative intelligence. You don't just generate ideas — you build systems to deliver them. This is one of the most sought-after personality combinations in senior leadership, research, and entrepreneurship. Companies compete for people with your profile.` };
+  if (E >= 70 && A >= 65) return { name:'The Natural Leader', desc:`You have the magnetic social presence of a leader combined with the emotional intelligence to genuinely inspire rather than just direct. You build loyalty, resolve conflict effortlessly, and create team cultures where people thrive. You are built for management, leadership, and high-impact collaborative work.` };
+  if (O >= 75 && C <= 45) return { name:'The Creative Maverick', desc:`Your mind operates at a high level of creative and abstract intelligence. You see connections others miss and generate ideas that push boundaries. With some structural discipline to channel your creativity, your impact can be extraordinary. You thrive in innovation-driven, design-forward environments.` };
+  if (C >= 75 && E <= 40) return { name:'The Meticulous Specialist', desc:`You are the person organisations rely on for precision, depth, and reliability. Your quiet, disciplined approach produces work of exceptional quality. In technical, scientific, analytical, and research roles, your profile consistently outperforms. You are a master of your domain.` };
+  if (A >= 75 && N <= 40) return { name:'The Trusted Cornerstone', desc:`People instinctively trust you — and with good reason. Your emotional stability combined with genuine empathy makes you an anchor in any team. You de-escalate conflict, support colleagues through difficulty, and build the social infrastructure that makes organisations function. You are invaluable.` };
+  if (N >= 70) return { name:'The Sensitive Achiever', desc:`Your emotional depth and sensitivity make you perceptive, passionate, and deeply committed to quality. The world's most impactful artists, researchers, and advocates share your profile. Building emotional resilience tools will unlock your full extraordinary potential.` };
+  if (O >= 60 && E >= 60 && A >= 60) return { name:'The Renaissance Professional', desc:`You combine intellectual curiosity, social confidence, and genuine warmth — a rare combination that makes you effective across virtually any professional context. You adapt, connect, and innovate. The world is your stage.` };
+  return { name:'The Balanced Pragmatist', desc:`Your personality profile shows well-rounded development across the OCEAN domains. You are versatile, adaptable, and able to operate effectively across a wide range of professional contexts. Focus on developing your highest and lowest scoring domains to differentiate yourself further.` };
+}
+
+// ── RENDER RESULTS ─────────────────────────────────────────────────────────────
+function showResults() {
+  const scores = calculateScores();
+  const profile = getProfileType(scores);
+
+  // Headlines
+  document.getElementById('resultsHeadline').textContent = `${userName}'s Personality Profile`;
+  document.getElementById('resultsSubline').textContent = 'Here is a comprehensive breakdown of your OCEAN personality dimensions, strengths, growth areas, and career alignment.';
+  document.getElementById('profileTypeName').textContent = profile.name;
+  document.getElementById('profileTypeDesc').textContent = profile.desc;
+
+  // OCEAN score cards
+  const grid = document.getElementById('scoresGrid');
+  grid.innerHTML = '';
+  const domainOrder = ['O','C','E','A','N'];
+  const domainFacets = {
+    O:'Intellect · Curiosity · Imagination · Aesthetic Sensitivity',
+    C:'Orderliness · Dutifulness · Achievement-Striving · Self-Discipline',
+    E:'Warmth · Gregariousness · Assertiveness · Positive Emotions',
+    A:'Trust · Altruism · Compliance · Modesty · Tender-Mindedness',
+    N:'Anxiety · Angry Hostility · Depression · Self-Consciousness · Impulsiveness'
+  };
+
+  domainOrder.forEach(d => {
+    const pct = scores[d];
+    const level = getLevel(pct);
+    const interp = DOMAIN_DESCRIPTIONS[d][level];
+    const levelLabels = { high:'High', mid:'Moderate', low:'Low' };
+
+    const card = document.createElement('div');
+    card.className = 'score-card';
+    card.innerHTML = `
+      <div class="score-card-top">
+        <div class="score-domain">
+          <div class="domain-letter domain-letter-${d}">${d}</div>
+          <div>
+            <div class="score-name">${DOMAIN_INFO[d].name}</div>
+            <div class="score-facet">${domainFacets[d]}</div>
+          </div>
+        </div>
+        <div class="score-value">${pct}<small>%</small></div>
+      </div>
+      <div class="score-bar-track"><div class="score-bar-fill fill-${d}" id="bar${d}"></div></div>
+      <div class="score-level level-${level === 'high' ? 'high' : level === 'mid' ? 'mid' : 'low'}">● ${levelLabels[level]}</div>
+      <div class="score-insight">
+        <span class="score-strength">✦ Strength: </span>${interp.strength}<br><br>
+        <span class="score-weakness">⚠ Watch-out: </span>${interp.weakness}
+      </div>`;
+    grid.appendChild(card);
+
+    setTimeout(() => {
+      document.getElementById(`bar${d}`).style.width = pct + '%';
+    }, 300);
+  });
+
+  // Improvement plans
+  const improveGrid = document.getElementById('improveCards');
+  improveGrid.innerHTML = '';
+  const plans = [];
+  if (getLevel(scores.O) === 'low') plans.push(IMPROVEMENT_PLANS.O_low);
+  if (getLevel(scores.C) === 'low') plans.push(IMPROVEMENT_PLANS.C_low);
+  if (getLevel(scores.E) === 'low') plans.push(IMPROVEMENT_PLANS.E_low);
+  if (getLevel(scores.A) === 'low') plans.push(IMPROVEMENT_PLANS.A_low);
+  if (getLevel(scores.N) === 'high') plans.push(IMPROVEMENT_PLANS.N_high);
+
+  if (plans.length === 0) {
+    improveGrid.innerHTML = `<div class="improve-card"><div class="improve-card-top"><span class="improve-icon">🏆</span><span class="improve-title">Outstanding Profile</span></div><div class="improve-desc">Your personality profile shows no areas of significant concern across the OCEAN dimensions. To continue growing, focus on deepening your strongest traits and practising in contexts that stretch you slightly outside your comfort zone.</div></div>`;
+  } else {
+    plans.forEach(p => {
+      const el = document.createElement('div');
+      el.className = 'improve-card';
+      el.innerHTML = `
+        <div class="improve-card-top"><span class="improve-icon">${p.icon}</span><span class="improve-title">${p.title}</span></div>
+        <div class="improve-desc">${p.desc}</div>
+        <div class="improve-tips">${p.tips.map(t=>`<div class="improve-tip">${t}</div>`).join('')}</div>`;
+      improveGrid.appendChild(el);
+    });
+  }
+
+  // Careers
+  const careerData = CAREER_PROFILES[userField] || CAREER_PROFILES.default;
+  document.getElementById('careerSubtitle').textContent = careerData.intro;
+  const careersGrid = document.getElementById('careersGrid');
+  careersGrid.innerHTML = '';
+  careerData.careers.forEach(c => {
+    const el = document.createElement('div');
+    el.className = 'career-card';
+    el.innerHTML = `<div class="career-icon">${c.icon}</div><div class="career-title">${c.title}</div><div class="career-match">${c.match}</div>`;
+    careersGrid.appendChild(el);
+  });
+  document.getElementById('careerNote').textContent = careerData.note;
+
+  showSection('results');
+
+  // Send email if enabled
+  if (emailEnabled) {
+    const email = document.getElementById('userEmail').value;
+    if (email) simulateSendEmail(email, userName, scores, profile);
+  }
+}
+
+function simulateSendEmail(email, name, scores, profile) {
+  // In production, integrate with EmailJS or a backend endpoint
+  // Example EmailJS integration:
+  // emailjs.send('YOUR_SERVICE_ID', 'YOUR_TEMPLATE_ID', { to_email: email, name: name, ... });
+  console.log(`[EMAIL] Would send results to: ${email}`);
+  // Show confirmation toast
+  const toast = document.createElement('div');
+  toast.style.cssText = 'position:fixed;bottom:24px;right:24px;background:var(--accent-c);color:#000;padding:14px 24px;border-radius:12px;font-size:13px;font-weight:600;z-index:9999;animation:fadeSlide 0.3s ease';
+  toast.textContent = `✓ Report queued for delivery to ${email}`;
+  document.body.appendChild(toast);
+  setTimeout(() => toast.remove(), 4000);
+}
+
+function shareResults() {
+  const scores = calculateScores();
+  const text = `I just completed the PsycheProfile OCEAN assessment! My scores: O:${scores.O}% C:${scores.C}% E:${scores.E}% A:${scores.A}% N:${scores.N}%. Try it yourself!`;
+  if (navigator.share) {
+    navigator.share({ title:'My PsycheProfile Results', text });
+  } else {
+    navigator.clipboard.writeText(text).then(() => alert('Results copied to clipboard!'));
+  }
+}
+
+function restartQuiz() {
+  answers = new Array(50).fill(null);
+  current = 0;
+  showSection('landing');
+}
+
+// ── INIT ───────────────────────────────────────────────────────────────────────
+window.addEventListener('load', () => {
+  setTimeout(() => {
+    document.getElementById('loadingScreen').classList.add('hidden');
+  }, 1800);
+});
+</script>
+</body>
+</html>
