@@ -1553,31 +1553,63 @@ function showResults() {
 }
 
 function simulateSendEmail(email, name, scores, profile) {
-  // Build improvement text
-  const imp = [];
-  if (getLevel(scores.O)==='low') imp.push('OPENNESS — Cultivate Curiosity: Read outside your field monthly. Generate 3 alternatives before choosing a solution. Join cross-disciplinary workshops.');
-  if (getLevel(scores.C)==='low') imp.push('CONSCIENTIOUSNESS — Build Discipline: Do a weekly Sunday review. Use time-blocking daily. Apply the 2-minute rule. Track commitments in a planner.');
-  if (getLevel(scores.E)==='low') imp.push('EXTRAVERSION — Build Visibility: Speak once in every meeting. Attend one networking event monthly. Join Toastmasters. Reconnect with 2 contacts weekly.');
-  if (getLevel(scores.A)==='low') imp.push('AGREEABLENESS — Build Empathy: Let others finish before responding. Acknowledge valid points before disagreeing. Read Nonviolent Communication.');
-  if (getLevel(scores.N)==='high') imp.push('EMOTIONAL STABILITY — Build Resilience: Practise 4-7-8 breathing when stressed. Keep a worry journal. Use cognitive reframing. Try a mindfulness programme.');
-  if (imp.length===0) imp.push('OUTSTANDING PROFILE — No critical gaps detected. Keep stretching your strongest traits in new and challenging professional contexts.');
+  const lv = p => p>=70 ? 'High' : p>=40 ? 'Moderate' : 'Low';
 
-  const levelLabel = p => p>=70?'High':p>=40?'Moderate':'Low';
+  // Build improvement lines
+  const imp = [];
+  if (getLevel(scores.O)==='low') imp.push('🔮 OPENNESS (Low)\nYou tend toward conventional thinking. To grow:\n→ Read one book outside your field every month\n→ When solving a problem, generate 3 alternatives before choosing\n→ Join a workshop or course in a completely different discipline\n→ Set a monthly "try something new" challenge');
+  if (getLevel(scores.C)==='low') imp.push('⚙️ CONSCIENTIOUSNESS (Low)\nYou may struggle with structure and follow-through. To grow:\n→ Do a Sunday evening review — plan your week with specific tasks\n→ Use time-blocking to protect deep work hours\n→ Apply the 2-minute rule: if it takes under 2 mins, do it now\n→ Use Todoist or Notion to track and review your commitments');
+  if (getLevel(scores.E)==='low') imp.push('⚡ EXTRAVERSION (Low)\nYou may be less visible professionally. To grow:\n→ Speak at least once in every meeting you attend\n→ Attend one networking event per month with 3 prepared conversation starters\n→ Join Toastmasters International (free, worldwide)\n→ Reconnect with 2 people in your professional network every week');
+  if (getLevel(scores.A)==='low') imp.push('🤝 AGREEABLENESS (Low)\nYou may create friction in team settings. To grow:\n→ Let others finish speaking before you respond\n→ Find one valid point in every opposing view before disagreeing\n→ Ask "how are you?" and genuinely listen to the full answer\n→ Read Nonviolent Communication by Marshall Rosenberg');
+  if (getLevel(scores.N)==='high') imp.push('🌊 EMOTIONAL STABILITY (Needs Development)\nYou may struggle under pressure. To grow:\n→ Practise 4-7-8 breathing: inhale 4s, hold 7s, exhale 8s\n→ Keep a worry journal — write each worry, then challenge it with evidence\n→ For every negative thought, write one realistic counterpoint\n→ Consider a structured 8-week MBSR mindfulness programme');
+  if (imp.length===0) imp.push('🏆 OUTSTANDING PROFILE\nNo critical gaps detected across your OCEAN dimensions.\n→ Keep stretching your strongest traits in new and challenging contexts\n→ Mentor others who are earlier in their development journey\n→ Seek leadership roles that leverage your well-rounded profile');
+
+  // Build one complete message block
+  const reportText =
+`━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+PSYCHEPROFILE — OCEAN ASSESSMENT REPORT
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Hello ${name},
+
+Thank you for completing the PsycheProfile OCEAN Psychometric Assessment — the same validated framework used by Fortune 500 recruiters, top universities, and global talent professionals.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+YOUR PERSONALITY ARCHETYPE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+${profile.name}
+
+${profile.desc}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+YOUR OCEAN SCORES
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+🔮 Openness:             ${scores.O}%  (${lv(scores.O)})
+⚙️  Conscientiousness:   ${scores.C}%  (${lv(scores.C)})
+⚡ Extraversion:         ${scores.E}%  (${lv(scores.E)})
+🤝 Agreeableness:        ${scores.A}%  (${lv(scores.A)})
+🌊 Emotional Stability:  ${scores.N}%  (${lv(scores.N)})
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+YOUR PERSONALISED GROWTH PLAN
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+${imp.join('\n\n')}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Share this assessment with others:
+${APP_URL}
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+PsycheProfile — OCEAN Psychometric Assessment
+Based on the Big Five (NEO PI-R) — 50+ years of validated research.`;
 
   const templateParams = {
-    to_email:      email,
-    to_name:       name,
-    reply_to:      email,
-    subject:       `Your PsycheProfile Report — ${profile.name}`,
-    profile_name:  profile.name,
-    profile_desc:  profile.desc,
-    score_o:       `${scores.O}% (${levelLabel(scores.O)})`,
-    score_c:       `${scores.C}% (${levelLabel(scores.C)})`,
-    score_e:       `${scores.E}% (${levelLabel(scores.E)})`,
-    score_a:       `${scores.A}% (${levelLabel(scores.A)})`,
-    score_n:       `${scores.N}% (${levelLabel(scores.N)})`,
-    improvements:  imp.join('\n\n'),
-    app_url:       APP_URL,
+    to_email:   email,
+    to_name:    name,
+    reply_to:   email,
+    subject:    `Your PsycheProfile Report — ${profile.name}`,
+    message:    reportText,
   };
 
   if (EMAILJS_SERVICE_ID === 'YOUR_SERVICE_ID') {
@@ -1590,8 +1622,8 @@ function simulateSendEmail(email, name, scores, profile) {
   emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, templateParams)
     .then(() => showToast(`✅ Report sent to ${email} — check your inbox!`, '#10b981'))
     .catch(err => {
-      console.error('[EmailJS]', err);
-      showToast('❌ Email failed — check console for details', '#ef4444');
+      console.error('[EmailJS Error]', err);
+      showToast('❌ Email failed — see console for details', '#ef4444');
     });
 }
 
