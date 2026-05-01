@@ -824,6 +824,91 @@
   .results-header { animation: confetti 0.5s ease; }
 
 </style>
+<!-- EmailJS SDK for sending results via email (free, no backend needed) -->
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+<script>
+  // ── EMAILJS SETUP ────────────────────────────────────────────────────────────
+  // HOW TO SET UP (takes 5 minutes — completely free):
+  // 1. Go to https://www.emailjs.com/ and create a free account
+  // 2. Click "Add New Service" → connect your Gmail / Outlook
+  // 3. Click "Email Templates" → "Create New Template"
+  // 4. Name it "psyche_report" — paste the template content below:
+  //    Subject: Your PsycheProfile OCEAN Report — {{profile_name}}
+  //    Body: use the HTML template provided in the comments below
+  // 5. Copy your: Service ID, Template ID, and Public Key
+  // 6. Replace the three XXXXXX values below with your actual IDs
+  
+  const EMAILJS_SERVICE_ID  = 'service_z0kdfjc';   // e.g. 'service_abc123'
+  const EMAILJS_TEMPLATE_ID = 'template_ptfqx4k';  // e.g. 'template_xyz789'
+  const EMAILJS_PUBLIC_KEY  = 'LXMg9B2zhnMjpZS3b';   // e.g. 'AbCdEfGhIjKlMn'
+
+  // ── YOUR GITHUB PAGES URL — update this to your actual hosted link ───────────
+  const APP_URL = 'https://vincentakwas.github.io/psycheprofile/';
+  // (Replace with your actual GitHub Pages URL after hosting)
+
+  emailjs.init({ publicKey: EMAILJS_PUBLIC_KEY });
+
+  /*
+  ════════════════════════════════════════════════════════
+  EMAILJS TEMPLATE — paste this as your template body
+  in the EmailJS dashboard under Email Templates:
+  ════════════════════════════════════════════════════════
+  
+  ════════════════════════════════════════════════════════
+  IMPORTANT: In your EmailJS template dashboard, set it up like this:
+  ════════════════════════════════════════════════════════
+  
+  SUBJECT field:
+  Your PsycheProfile Report — {{subject}}
+
+  CONTENT type: HTML
+  
+  BODY field (paste exactly this one line — EmailJS will auto-fill):
+  {{{email_html}}}
+  
+  NOTE: Use TRIPLE braces {{{email_html}}} not double — this allows
+  EmailJS to render the HTML without escaping it.
+  ════════════════════════════════════════════════════════
+  
+  SUBJECT: Your PsycheProfile OCEAN Report — {{profile_name}}
+  
+  BODY (use HTML template in EmailJS):
+  
+  Hi {{to_name}},
+
+  Your PsycheProfile OCEAN Psychometric Assessment is complete!
+
+  ━━━━━━━━━━━━━━━━━━━━━━━━━━
+  YOUR PERSONALITY ARCHETYPE
+  ━━━━━━━━━━━━━━━━━━━━━━━━━━
+  {{profile_name}}
+
+  {{profile_desc}}
+
+  ━━━━━━━━━━━━━━━━━━━━━━━━━━
+  YOUR OCEAN SCORES
+  ━━━━━━━━━━━━━━━━━━━━━━━━━━
+  🔮 Openness:            {{score_o}}
+  ⚙️ Conscientiousness:  {{score_c}}
+  ⚡ Extraversion:        {{score_e}}
+  🤝 Agreeableness:      {{score_a}}
+  🌊 Emotional Stability: {{score_n}}
+
+  ━━━━━━━━━━━━━━━━━━━━━━━━━━
+  YOUR GROWTH AREAS & ACTION PLAN
+  ━━━━━━━━━━━━━━━━━━━━━━━━━━
+  {{improvements}}
+
+  ━━━━━━━━━━━━━━━━━━━━━━━━━━
+  Share this assessment with others:
+  {{app_url}}
+  ━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  PsycheProfile — OCEAN Psychometric Assessment
+  Based on the Big Five (NEO PI-R) — used by Fortune 500 recruiters worldwide.
+  ════════════════════════════════════════════════════════
+  */
+</script>
 </head>
 <body>
 
@@ -1468,26 +1553,239 @@ function showResults() {
 }
 
 function simulateSendEmail(email, name, scores, profile) {
-  // In production, integrate with EmailJS or a backend endpoint
-  // Example EmailJS integration:
-  // emailjs.send('YOUR_SERVICE_ID', 'YOUR_TEMPLATE_ID', { to_email: email, name: name, ... });
-  console.log(`[EMAIL] Would send results to: ${email}`);
-  // Show confirmation toast
+
+  // ── Build improvement plan ──────────────────────────────────────────────────
+  const improvementItems = [];
+  if (getLevel(scores.O) === 'low') improvementItems.push({
+    icon:'🔮', title:'Cultivate Intellectual Curiosity',
+    tips:['Read one non-fiction book per month outside your field (start with Thinking Fast and Slow by Daniel Kahneman)','Join cross-disciplinary workshops or online courses (Coursera, edX)','When solving a problem, deliberately generate 3 alternative approaches before choosing one','Set a monthly "try something new" challenge — a new skill, perspective, or experience']
+  });
+  if (getLevel(scores.C) === 'low') improvementItems.push({
+    icon:'⚙️', title:'Build Structured Discipline Habits',
+    tips:['Implement a weekly Sunday review: plan the coming week with specific tasks and deadlines','Use time-blocking — allocate fixed daily slots for deep work and admin tasks','Apply the two-minute rule: if a task takes under two minutes, do it immediately','Track your commitments in Todoist or Notion and review your completion rate weekly']
+  });
+  if (getLevel(scores.E) === 'low') improvementItems.push({
+    icon:'⚡', title:'Build Professional Visibility',
+    tips:['Commit to speaking at least once in every meeting you attend — one comment or question is enough','Attend one professional networking event per month — prepare three conversation starters in advance','Join Toastmasters International (free, worldwide) to develop public speaking confidence','Practise warm contact: reconnect with two people in your network every week']
+  });
+  if (getLevel(scores.A) === 'low') improvementItems.push({
+    icon:'🤝', title:'Develop Empathy & Diplomatic Communication',
+    tips:['Practise active listening: let others finish completely before you respond','Before disagreeing, acknowledge valid elements of the other perspective first','Ask "how are you?" genuinely and listen to the full answer','Read Nonviolent Communication by Marshall Rosenberg — a proven empathy toolkit']
+  });
+  if (getLevel(scores.N) === 'high') improvementItems.push({
+    icon:'🌊', title:'Build Emotional Resilience',
+    tips:['Practise 4-7-8 breathing (inhale 4s, hold 7s, exhale 8s) when you feel overwhelmed','Keep a worry journal: write anxieties down, then challenge each with realistic evidence','Practise cognitive reframing: for every negative thought, write one realistic counterpoint','Consider a structured MBSR mindfulness programme — proven to reduce anxiety by up to 39%']
+  });
+  if (improvementItems.length === 0) improvementItems.push({
+    icon:'🏆', title:'Outstanding Profile — No Critical Gaps',
+    tips:['Continue stretching your strongest traits in new and challenging contexts','Mentor others who are earlier in their development journey','Seek increasingly complex challenges that test your full personality range','Consider leadership roles that leverage your well-rounded profile']
+  });
+
+  // ── Score levels ──────────────────────────────────────────────────────────────
+  const levelLabel = (pct) => pct >= 70 ? 'High' : pct >= 40 ? 'Moderate' : 'Low';
+  const levelColor = (pct) => pct >= 70 ? '#10b981' : pct >= 40 ? '#f59e0b' : '#8b5cf6';
+  const bar = (pct, color) => `<div style="background:#e5e7eb;border-radius:4px;height:8px;width:100%;margin:4px 0 8px;"><div style="background:${color};height:8px;border-radius:4px;width:${pct}%;"></div></div>`;
+
+  // ── Build improvement HTML ────────────────────────────────────────────────────
+  const improvHTML = improvementItems.map(item => `
+    <div style="background:#f9fafb;border-left:4px solid #f59e0b;border-radius:8px;padding:16px;margin-bottom:16px;">
+      <div style="font-size:15px;font-weight:700;color:#111827;margin-bottom:10px;">${item.icon} ${item.title}</div>
+      ${item.tips.map(t => `<div style="font-size:13px;color:#4b5563;margin-bottom:6px;padding-left:12px;">→ ${t}</div>`).join('')}
+    </div>`).join('');
+
+  // ── Build full self-drafted HTML email ───────────────────────────────────────
+  const emailHTML = `
+<!DOCTYPE html>
+<html>
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
+<body style="margin:0;padding:0;background:#f3f4f6;font-family:'Segoe UI',Arial,sans-serif;">
+<div style="max-width:600px;margin:0 auto;padding:32px 16px;">
+
+  <!-- Header -->
+  <div style="background:linear-gradient(135deg,#0a0a0f 0%,#1a1a2e 100%);border-radius:16px 16px 0 0;padding:40px 32px;text-align:center;">
+    <div style="font-size:32px;margin-bottom:8px;">🧠</div>
+    <div style="color:#f59e0b;font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;margin-bottom:8px;">OCEAN PSYCHOMETRIC ASSESSMENT</div>
+    <div style="color:#ffffff;font-size:26px;font-weight:800;margin-bottom:4px;">PsycheProfile</div>
+    <div style="color:#9ca3af;font-size:13px;">Your personalised personality report</div>
+  </div>
+
+  <!-- Greeting -->
+  <div style="background:#ffffff;padding:32px;border-left:1px solid #e5e7eb;border-right:1px solid #e5e7eb;">
+    <div style="font-size:18px;font-weight:700;color:#111827;margin-bottom:8px;">Hello ${name}, your results are in! 👋</div>
+    <div style="font-size:14px;color:#6b7280;line-height:1.6;">
+      Thank you for completing the PsycheProfile OCEAN assessment — the same validated framework used by 
+      Fortune 500 recruiters, top universities, and global talent professionals worldwide. 
+      Below is your full, personalised personality report.
+    </div>
+  </div>
+
+  <!-- Archetype -->
+  <div style="background:linear-gradient(135deg,#fffbeb,#fef3c7);border:1px solid #fde68a;border-radius:0;padding:28px 32px;">
+    <div style="font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#d97706;margin-bottom:8px;">YOUR PERSONALITY ARCHETYPE</div>
+    <div style="font-size:22px;font-weight:800;color:#111827;margin-bottom:12px;">${profile.name}</div>
+    <div style="font-size:14px;color:#374151;line-height:1.7;">${profile.desc}</div>
+  </div>
+
+  <!-- OCEAN Scores -->
+  <div style="background:#ffffff;padding:28px 32px;border-left:1px solid #e5e7eb;border-right:1px solid #e5e7eb;">
+    <div style="font-size:13px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#374151;margin-bottom:20px;">📊 YOUR OCEAN SCORES</div>
+    
+    <div style="margin-bottom:16px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;">
+        <span style="font-size:14px;font-weight:600;color:#111827;">🔮 Openness</span>
+        <span style="font-size:14px;font-weight:700;color:${levelColor(scores.O)};">${scores.O}% — ${levelLabel(scores.O)}</span>
+      </div>
+      ${bar(scores.O, levelColor(scores.O))}
+      <div style="font-size:12px;color:#6b7280;">Creativity, curiosity, and openness to new ideas and experiences.</div>
+    </div>
+
+    <div style="margin-bottom:16px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;">
+        <span style="font-size:14px;font-weight:600;color:#111827;">⚙️ Conscientiousness</span>
+        <span style="font-size:14px;font-weight:700;color:${levelColor(scores.C)};">${scores.C}% — ${levelLabel(scores.C)}</span>
+      </div>
+      ${bar(scores.C, levelColor(scores.C))}
+      <div style="font-size:12px;color:#6b7280;">Organisation, reliability, discipline, and goal-directed behaviour.</div>
+    </div>
+
+    <div style="margin-bottom:16px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;">
+        <span style="font-size:14px;font-weight:600;color:#111827;">⚡ Extraversion</span>
+        <span style="font-size:14px;font-weight:700;color:${levelColor(scores.E)};">${scores.E}% — ${levelLabel(scores.E)}</span>
+      </div>
+      ${bar(scores.E, levelColor(scores.E))}
+      <div style="font-size:12px;color:#6b7280;">Sociability, assertiveness, positive energy, and leadership presence.</div>
+    </div>
+
+    <div style="margin-bottom:16px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;">
+        <span style="font-size:14px;font-weight:600;color:#111827;">🤝 Agreeableness</span>
+        <span style="font-size:14px;font-weight:700;color:${levelColor(scores.A)};">${scores.A}% — ${levelLabel(scores.A)}</span>
+      </div>
+      ${bar(scores.A, levelColor(scores.A))}
+      <div style="font-size:12px;color:#6b7280;">Empathy, cooperation, trust, and interpersonal warmth.</div>
+    </div>
+
+    <div style="margin-bottom:4px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;">
+        <span style="font-size:14px;font-weight:600;color:#111827;">🌊 Emotional Stability</span>
+        <span style="font-size:14px;font-weight:700;color:${levelColor(scores.N)};">${scores.N}% — ${levelLabel(scores.N)}</span>
+      </div>
+      ${bar(scores.N, levelColor(scores.N))}
+      <div style="font-size:12px;color:#6b7280;">Composure under pressure, emotional regulation, and resilience.</div>
+    </div>
+  </div>
+
+  <!-- Improvements -->
+  <div style="background:#ffffff;padding:28px 32px;border-left:1px solid #e5e7eb;border-right:1px solid #e5e7eb;border-top:1px solid #f3f4f6;">
+    <div style="font-size:13px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#374151;margin-bottom:20px;">🎯 YOUR PERSONALISED GROWTH PLAN</div>
+    ${improvHTML}
+  </div>
+
+  <!-- CTA -->
+  <div style="background:linear-gradient(135deg,#0a0a0f,#1a1a2e);border-radius:0 0 16px 16px;padding:32px;text-align:center;">
+    <div style="color:#9ca3af;font-size:13px;margin-bottom:16px;">Know someone who should discover their personality profile?</div>
+    <a href="${APP_URL}" style="display:inline-block;background:linear-gradient(135deg,#f59e0b,#f97316);color:#000000;font-weight:700;font-size:14px;padding:14px 32px;border-radius:100px;text-decoration:none;letter-spacing:0.3px;">
+      Share PsycheProfile →
+    </a>
+    <div style="color:#4b5563;font-size:11px;margin-top:24px;line-height:1.6;">
+      PsycheProfile · OCEAN Psychometric Assessment<br>
+      Based on the Big Five (NEO PI-R) — 50+ years of validated personality research.<br>
+      <a href="${APP_URL}" style="color:#f59e0b;text-decoration:none;">${APP_URL}</a>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>`;
+
+  // ── Template params sent to EmailJS ──────────────────────────────────────────
+  const templateParams = {
+    to_email:      email,
+    to_name:       name,
+    subject:       `Your PsycheProfile Report — ${profile.name}`,
+    email_html:    emailHTML,
+    // Fallback plain text for email clients that don't render HTML
+    email_text:    `Hi ${name}, your PsycheProfile OCEAN results: Archetype: ${profile.name}. Scores — Openness: ${scores.O}%, Conscientiousness: ${scores.C}%, Extraversion: ${scores.E}%, Agreeableness: ${scores.A}%, Emotional Stability: ${scores.N}%. Full report at: ${APP_URL}`,
+    reply_to:      email,
+  };
+
+  // ── Guard: check EmailJS is configured ────────────────────────────────────────
+  if (EMAILJS_SERVICE_ID === 'YOUR_SERVICE_ID') {
+    showToast('⚠️ EmailJS not configured — see setup comments in the HTML', '#f59e0b');
+    return;
+  }
+
+  showToast('📨 Sending your report...', '#3b82f6');
+
+  emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, templateParams)
+    .then(() => {
+      showToast(`✅ Full report sent to ${email} — check your inbox!`, '#10b981');
+    })
+    .catch((err) => {
+      console.error('[EmailJS]', err);
+      showToast('❌ Email failed — check your EmailJS template has a {{email_html}} variable', '#ef4444');
+    });
+}
+
+function showToast(message, color) {
+  // Remove existing toasts
+  document.querySelectorAll('.psych-toast').forEach(t => t.remove());
   const toast = document.createElement('div');
-  toast.style.cssText = 'position:fixed;bottom:24px;right:24px;background:var(--accent-c);color:#000;padding:14px 24px;border-radius:12px;font-size:13px;font-weight:600;z-index:9999;animation:fadeSlide 0.3s ease';
-  toast.textContent = `✓ Report queued for delivery to ${email}`;
+  toast.className = 'psych-toast';
+  toast.style.cssText = `position:fixed;bottom:24px;right:24px;left:24px;max-width:420px;margin:0 auto;background:${color};color:#000;padding:16px 24px;border-radius:14px;font-size:13px;font-weight:600;z-index:9999;box-shadow:0 8px 40px rgba(0,0,0,0.4);animation:fadeSlide 0.3s ease;display:flex;align-items:center;gap:10px;`;
+  toast.textContent = message;
   document.body.appendChild(toast);
-  setTimeout(() => toast.remove(), 4000);
+  setTimeout(() => {
+    toast.style.opacity = '0';
+    toast.style.transition = 'opacity 0.4s';
+    setTimeout(() => toast.remove(), 400);
+  }, 5000);
 }
 
 function shareResults() {
   const scores = calculateScores();
-  const text = `I just completed the PsycheProfile OCEAN assessment! My scores: O:${scores.O}% C:${scores.C}% E:${scores.E}% A:${scores.A}% N:${scores.N}%. Try it yourself!`;
+  const profile = getProfileType(scores);
+  const shareText = `I just completed the PsycheProfile OCEAN Psychometric Assessment!\n\n🧠 My Personality Archetype: "${profile.name}"\n\n📊 My OCEAN Scores:\n🔮 Openness: ${scores.O}%\n⚙️ Conscientiousness: ${scores.C}%\n⚡ Extraversion: ${scores.E}%\n🤝 Agreeableness: ${scores.A}%\n🌊 Emotional Stability: ${scores.N}%\n\n✨ Take the free assessment here:\n${APP_URL}\n\n(Used by Fortune 500 recruiters — takes 15 mins)`;
+  const shareUrl = APP_URL;
+
   if (navigator.share) {
-    navigator.share({ title:'My PsycheProfile Results', text });
+    navigator.share({
+      title: `My PsycheProfile — ${profile.name}`,
+      text: shareText,
+      url: shareUrl,
+    }).catch(() => {
+      // Fallback if share dialog cancelled
+      copyShareText(shareText);
+    });
   } else {
-    navigator.clipboard.writeText(text).then(() => alert('Results copied to clipboard!'));
+    copyShareText(shareText);
   }
+}
+
+function copyShareText(text) {
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text).then(() => {
+      showToast('📋 Results & link copied to clipboard! Paste anywhere to share.', '#10b981');
+    }).catch(() => fallbackCopy(text));
+  } else {
+    fallbackCopy(text);
+  }
+}
+
+function fallbackCopy(text) {
+  const ta = document.createElement('textarea');
+  ta.value = text;
+  ta.style.cssText = 'position:fixed;top:-9999px;left:-9999px;';
+  document.body.appendChild(ta);
+  ta.focus(); ta.select();
+  try {
+    document.execCommand('copy');
+    showToast('📋 Results & link copied! Paste anywhere to share.', '#10b981');
+  } catch(e) {
+    showToast('⚠️ Could not copy — please copy the URL from your browser bar', '#f59e0b');
+  }
+  document.body.removeChild(ta);
 }
 
 function restartQuiz() {
