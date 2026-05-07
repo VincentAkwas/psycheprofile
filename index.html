@@ -908,6 +908,181 @@
   Based on the Big Five (NEO PI-R) — used by Fortune 500 recruiters worldwide.
   ════════════════════════════════════════════════════════
   */
+  // ============================================================
+// NEW: Email sending with Google Apps Script integration
+// Add this at the bottom of your <script> tag
+// ============================================================
+
+// IMPORTANT: Replace this URL with your actual Google Apps Script URL
+const GOOGLE_APPS_SCRIPT_URL = 'https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec';
+
+// This REPLACES your existing simulateSendEmail function
+async function simulateSendEmail(email, name, scores, profile) {
+  if (!email || email === '') {
+    showToast('⚠️ No email provided', '#f59e0b');
+    return;
+  }
+
+  showToast('📨 Processing your report...', '#3b82f6');
+
+  try {
+    // Try to call Google Apps Script for enhanced results
+    const response = await fetch(GOOGLE_APPS_SCRIPT_URL, {
+      method: 'POST',
+      mode: 'cors',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        scores: scores,
+        userName: name,
+        userField: userField || 'general'
+      })
+    });
+
+    let enhancedProfile = profile;
+    let enhancedImprovements = '';
+    
+    if (response.ok) {
+      const data = await response.json();
+      if (data.success) {
+        enhancedProfile = { name: data.profile_name, desc: data.profile_desc };
+        enhancedImprovements = data.improvements;
+      }
+    }
+    
+    // Build the email content
+    const levelText = p => p >= 70 ? 'High' : p >= 40 ? 'Moderate' : 'Low';
+    
+    // Use enhanced improvements or generate locally
+    const improvementsText = enhancedImprovements || generateImprovementsLocally(scores);
+    
+    const reportText = 
+`━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+PSYCHEPROFILE — OCEAN ASSESSMENT REPORT
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Hello ${name},
+
+Thank you for completing the PsycheProfile OCEAN Psychometric Assessment — the same validated framework used by Fortune 500 recruiters worldwide.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+YOUR PERSONALITY ARCHETYPE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+${enhancedProfile.name}
+
+${enhancedProfile.desc}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+YOUR OCEAN SCORES
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+🔮 Openness:             ${scores.O}%  (${levelText(scores.O)})
+⚙️  Conscientiousness:   ${scores.C}%  (${levelText(scores.C)})
+⚡ Extraversion:         ${scores.E}%  (${levelText(scores.E)})
+🤝 Agreeableness:        ${scores.A}%  (${levelText(scores.A)})
+🌊 Emotional Stability:  ${scores.N}%  (${levelText(scores.N)})
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+YOUR PERSONALISED GROWTH PLAN
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+${improvementsText}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Share this assessment with others:
+${APP_URL}
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+PsycheProfile — OCEAN Psychometric Assessment
+Based on the Big Five (NEO PI-R) — 50+ years of validated research.`;
+
+    // Send via EmailJS
+    const templateParams = {
+      to_email:   email,
+      to_name:    name,
+      reply_to:   email,
+      subject:    `Your PsycheProfile Report — ${enhancedProfile.name}`,
+      message:    reportText,
+    };
+
+    const result = await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, templateParams);
+    
+    if (result.status === 200) {
+      showToast(`✅ Report sent to ${email} — check your inbox!`, '#10b981');
+    } else {
+      throw new Error('Email send failed');
+    }
+
+  } catch (error) {
+    console.error('[Email Error]', error);
+    showToast('⚠️ Using fallback mode...', '#f59e0b');
+    // Fallback: send email without Apps Script
+    sendFallbackEmail(email, name, scores, profile);
+  }
+}
+
+// Fallback function (works even without Apps Script)
+function sendFallbackEmail(email, name, scores, profile) {
+  const levelText = p => p >= 70 ? 'High' : p >= 40 ? 'Moderate' : 'Low';
+  
+  let improvements = '';
+  if (scores.O < 50) improvements += '🔮 OPENNESS (Low): Read one book outside your field monthly. Generate 3 alternatives before choosing solutions.\n\n';
+  if (scores.C < 50) improvements += '⚙️ CONSCIENTIOUSNESS (Low): Use weekly planning reviews and time-blocking. Apply the 2-minute rule.\n\n';
+  if (scores.E < 50) improvements += '⚡ EXTRAVERSION (Low): Speak once in every meeting. Attend one networking event monthly.\n\n';
+  if (scores.A < 50) improvements += '🤝 AGREEABLENESS (Low): Let others finish speaking. Find valid points in opposing views.\n\n';
+  if (scores.N > 60) improvements += '🌊 EMOTIONAL STABILITY (Needs work): Practice 4-7-8 breathing. Keep a worry journal.\n\n';
+  if (improvements === '') improvements = '🏆 Outstanding profile! Focus on deepening your strongest traits.';
+
+  const reportText = 
+`━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+PSYCHEPROFILE — OCEAN ASSESSMENT REPORT
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Hello ${name},
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+YOUR PERSONALITY ARCHETYPE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+${profile.name}
+
+${profile.desc}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+YOUR OCEAN SCORES
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+🔮 Openness: ${scores.O}% (${levelText(scores.O)})
+⚙️ Conscientiousness: ${scores.C}% (${levelText(scores.C)})
+⚡ Extraversion: ${scores.E}% (${levelText(scores.E)})
+🤝 Agreeableness: ${scores.A}% (${levelText(scores.A)})
+🌊 Emotional Stability: ${scores.N}% (${levelText(scores.N)})
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+YOUR GROWTH PLAN
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+${improvements}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Share: ${APP_URL}
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`;
+
+  emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
+    to_email: email,
+    to_name: name,
+    subject: `Your PsycheProfile Report — ${profile.name}`,
+    message: reportText
+  }).then(() => showToast(`✅ Report sent to ${email}`, '#10b981'))
+    .catch(err => showToast('❌ Email failed. Please check console.', '#ef4444'));
+}
+
+// Helper function for local improvements
+function generateImprovementsLocally(scores) {
+  let plan = '';
+  if (scores.O < 50) plan += '🔮 OPENNESS: Read one book outside your field monthly. Generate 3 alternatives before choosing solutions.\n\n';
+  if (scores.C < 50) plan += '⚙️ CONSCIENTIOUSNESS: Use weekly planning reviews and time-blocking. Apply the 2-minute rule.\n\n';
+  if (scores.E < 50) plan += '⚡ EXTRAVERSION: Speak once in every meeting. Attend one networking event monthly.\n\n';
+  if (scores.A < 50) plan += '🤝 AGREEABLENESS: Let others finish speaking. Find valid points in opposing views.\n\n';
+  if (scores.N > 60) plan += '🌊 EMOTIONAL STABILITY: Practice 4-7-8 breathing. Keep a worry journal.\n\n';
+  if (plan === '') plan = '🏆 Outstanding profile! Focus on deepening your strongest traits.';
+  return plan;
+}
 </script>
 </head>
 <body>
